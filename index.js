@@ -71,8 +71,12 @@ app.post("/api/users/:_id/exercises", (req, res) => {
 app.get("/api/users/:_id/logs", (req, res) => {
     User.findById(req.params._id).then((user) => {
         if (req.query.to && req.query.from) {
-            let filtered = user.log.filter(item => (new Date(item.date) >= new Date(req.query.from)) && (new Date(item.date) <= new Date(req.query.to))).slice(0, req.query.limit);
+            let filtered = user.log.filter(item => (new Date(item.date) >= new Date(req.query.from)) && (new Date(item.date) <= new Date(req.query.to)));
             user.log = filtered;
+        }
+        if (req.query.limit) {
+            let sliced = user.log.slice(0, req.query.limit);
+            user.log = sliced;
         }
         res.json(user);
     }).catch((error) => {
